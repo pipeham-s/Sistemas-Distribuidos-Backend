@@ -1,6 +1,7 @@
 package com.example.backend_sistemas_distribuidos.business.controllers; // Ajusta esto a tu paquete real
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,6 +11,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api") // Ruta base para este controlador
+@CrossOrigin(origins = "http://localhost:3000")  // Permite solicitudes desde el frontend
+
 public class TestController {
 
     @GetMapping("/test") // Ruta para el endpoint /api/test
