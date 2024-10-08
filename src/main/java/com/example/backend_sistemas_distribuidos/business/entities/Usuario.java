@@ -1,10 +1,14 @@
 package com.example.backend_sistemas_distribuidos.business.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "usuarios")
 @Inheritance(strategy = InheritanceType.JOINED)  // Permite herencia con Alumnos y Administradores
+@Getter
+@Setter
 public class Usuario {
 
     @Id
@@ -16,7 +20,7 @@ public class Usuario {
     private String cedula;
     private String correo;
     private String contrasena;
-}
-// Elimina la relación @OneToMany con Alumno, ya que no es necesaria para la herencia.
 
-// Constructores, Getters y Setters
+
+}
+
