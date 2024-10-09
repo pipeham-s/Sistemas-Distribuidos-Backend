@@ -7,6 +7,8 @@ import com.example.backend_sistemas_distribuidos.persistance.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UsuarioMgr {
     @Autowired
@@ -22,4 +24,11 @@ public class UsuarioMgr {
             throw new InvalidInformation("Contrasena invalida");
         }
     }
+    public List<Usuario> obtenerTodosLosUsuarios() {
+        // Usar el repositorio para obtener todos los usuarios
+        return usuarioRepository.findAll();
+
+}
+
+
 }
