@@ -2,6 +2,7 @@ package com.example.backend_sistemas_distribuidos.business.controllers;
 
 import com.example.backend_sistemas_distribuidos.business.entities.Usuario;
 import com.example.backend_sistemas_distribuidos.business.entities.auxiliar.LoginRequest;
+import com.example.backend_sistemas_distribuidos.business.entities.auxiliar.RegisterRequest;
 import com.example.backend_sistemas_distribuidos.business.exceptions.EntidadNoExiste;
 import com.example.backend_sistemas_distribuidos.business.exceptions.InvalidInformation;
 import com.example.backend_sistemas_distribuidos.business.managers.UsuarioMgr;
@@ -20,9 +21,6 @@ public class UsuarioController {
     private UsuarioMgr usuarioManager;
 
     // Endpoint para validar login
-
-
-
         // Endpoint para validar login usando @RequestBody
         @PostMapping("/login")
         public ResponseEntity<?> validarLogin(@RequestBody LoginRequest loginRequest) {
@@ -45,6 +43,31 @@ public class UsuarioController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en el sistema");
             }
         }
+    @PostMapping("/crear")
+    public ResponseEntity<?> crearUsuario(@RequestBody RegisterRequest registerRequest) {
+        try {
+            // Llamada al servicio para crear el usuario
+            String nombre = registerRequest.getNombre();
+            String apellido = registerRequest.getApellido();
+            String correo = registerRequest.getCorreo();
+            String cedula = registerRequest.getCedula();
+            String contrasena = registerRequest.getContrasena();
+            System.out.println("entro");
+            Usuario usuario = usuarioManager.crearUsuario(nombre, apellido, cedula , correo, contrasena);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(usuario);
+        } catch (InvalidInformation e) {
+            // Si la información es inválida, se devuelve un error 400
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (EntidadNoExiste e) {
+            // Si alguna entidad no existe, se devuelve un error 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            // Para cualquier otro error, se devuelve un error 500
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear el usuario");
+        }
     }
+}
+
 
 
