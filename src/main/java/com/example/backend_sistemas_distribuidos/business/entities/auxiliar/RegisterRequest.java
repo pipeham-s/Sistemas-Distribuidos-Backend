@@ -1,23 +1,21 @@
 package com.example.backend_sistemas_distribuidos.business.entities.auxiliar;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RegisterRequest {
-    @Getter
-    @Setter
+
     private String correo;
-    @Getter
-    @Setter
-    private String contrasena;
-    @Getter
-    @Setter
+
+    private String password;
+
     private String nombre;
-    @Getter
-    @Setter
+
     private String apellido;
-    @Getter
-    @Setter
+
     private String cedula;
 
 
