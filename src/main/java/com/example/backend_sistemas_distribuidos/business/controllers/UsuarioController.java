@@ -26,8 +26,8 @@ public class UsuarioController {
         public ResponseEntity<?> validarLogin(@RequestBody LoginRequest loginRequest) {
             try {
                 // Extraer los datos de loginRequest
-                String correo = loginRequest.getCorreo();
-                String contrasena = loginRequest.getContrasena();
+                String correo = loginRequest.getUsername();
+                String contrasena = loginRequest.getPassword();
 
 
                 Usuario usuario = usuarioManager.validarLogin(correo, contrasena);
@@ -51,7 +51,7 @@ public class UsuarioController {
             String apellido = registerRequest.getApellido();
             String correo = registerRequest.getCorreo();
             String cedula = registerRequest.getCedula();
-            String contrasena = registerRequest.getContrasena();
+            String contrasena = registerRequest.getPassword();
             System.out.println("entro");
             Usuario usuario = usuarioManager.crearUsuario(nombre, apellido, cedula , correo, contrasena);
 

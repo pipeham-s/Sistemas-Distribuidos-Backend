@@ -18,7 +18,7 @@ public class UsuarioMgr {
 
     public Usuario validarLogin(String email, String contrasena) throws InvalidInformation, EntidadNoExiste{
         Usuario usuario = usuarioRepository.findOneByCorreo(email).orElseThrow(() -> new EntidadNoExiste("Usuario no existe"));
-        if (usuario.getContrasena().equals(contrasena)){
+        if (usuario.getPassword().equals(contrasena)){
             return usuario;
         }
         else {
@@ -53,7 +53,7 @@ public class UsuarioMgr {
         nuevoUsuario.setApellido(apellido);
         nuevoUsuario.setCedula(cedula);
         nuevoUsuario.setCorreo(correo);
-        nuevoUsuario.setContrasena(contrasena); // Idealmente se debe encriptar la contraseña antes de guardarla
+        nuevoUsuario.setPassword(contrasena); // Idealmente se debe encriptar la contraseña antes de guardarla
         System.out.println(nombre + apellido);
         // Guardar el nuevo usuario en la base de datos
         Usuario usuarioGuardado = usuarioRepository.save(nuevoUsuario);

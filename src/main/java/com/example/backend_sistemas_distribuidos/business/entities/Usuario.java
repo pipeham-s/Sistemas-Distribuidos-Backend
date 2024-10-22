@@ -23,18 +23,31 @@ public class Usuario  implements UserDetails {
     @Id
     @Column(unique = true, nullable = false)  // Asegura que el nombre sea único y no nulo
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
+    @Setter
     private Long id;
     @Column( nullable = false)  // Asegura que el nombre sea único y no nulo
+    @Getter
+    @Setter
     private String nombre;
     @Column( nullable = false)  // Asegura que el nombre sea único y no nulo
+    @Getter
     private String apellido;
     @Column(unique = true, nullable = false)  // Asegura que el nombre sea único y no nulo
+    @Getter
+    @Setter
     private String cedula;
     @Column( nullable = false)  // Asegura que el nombre sea único y no nulo
+    @Getter
+    @Setter
     private String correo;
     @Column( nullable = false)  // Asegura que el nombre sea único y no nulo
+    @Getter
+    @Setter
     private String password;
     @Enumerated(EnumType.STRING)
+    @Getter
+    @Setter
     private Role role;
 
 
