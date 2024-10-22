@@ -4,7 +4,6 @@ import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +13,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 
-import javax.crypto.SecretKey;
+
 
 @Service
 public class JwtService {
@@ -30,8 +29,7 @@ public class JwtService {
                 .setSubject(usuario.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis()+86400000 ))
-                .signWith(getKey(), SignatureAlgorithm.HS256)
-                .compact(); 
+                .signWith(getKey, Si)
 
 
     }
