@@ -20,7 +20,7 @@ import javax.crypto.SecretKey;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY="UNJN2L3NI4234N2L34N23IL4N234IN23LK4N234jnbu42nni423lk4n2234hjb23kbu4234kl23b4ui23b4k23bu42k34b";
+    private static final String SECRET_KEY="UNJN2L3NI4234N2L34N23IL4N234IN23LK4N234jnbu42nni423lk4n2234hjb23kbu4234kl23b4ui23b4k23bu42k34bDOBLETONKA";
 
     public String getToken(UserDetails usuario) {
         return getToken(new HashMap<>(), usuario);
@@ -47,6 +47,7 @@ public class JwtService {
         return getClaim(token, Claims::getSubject);
 
     }
+
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = getUsernameFromeToken(token);
