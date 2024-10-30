@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -50,6 +51,12 @@ public class Usuario  implements UserDetails {
     @Setter
     private Role role;
 
+    @ManyToMany(mappedBy = "usuariosProfesores", fetch = FetchType.LAZY)
+    @Getter
+    @Setter
+    private List<Materia> materias;
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -70,5 +77,15 @@ public class Usuario  implements UserDetails {
 
     @Override
     public boolean isEnabled() {return true;}
+
+    public void agregarMateria(Materia materia) {
+        if (this.materias == null) {
+            this.materias = new ArrayList<>();
+        }
+        if (!this.materias.contains(materia)) {
+            this.materias.add(materia);
+            materia.getUsuariosProfesores().add(this);
+        }
+    }
 }
 

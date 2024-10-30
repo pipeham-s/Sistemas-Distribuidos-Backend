@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface UsuarioRepository extends CrudRepository<Usuario, Long> {
     Optional<Usuario> findOneByCorreo(String correo);
     Optional<Usuario> findByCorreo(String correo);
+    Optional<Usuario> findOneByCedula(Long cedula);
 
     List<Usuario> findAll();
 
