@@ -1,5 +1,6 @@
 package com.example.backend_sistemas_distribuidos.business.controllers.auth;
 
+import com.example.backend_sistemas_distribuidos.business.entities.Alumno;
 import com.example.backend_sistemas_distribuidos.business.entities.Role;
 import com.example.backend_sistemas_distribuidos.business.entities.Usuario;
 import com.example.backend_sistemas_distribuidos.business.entities.auxiliar.AuthResponse;
@@ -13,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.example.backend_sistemas_distribuidos.business.entities.Alumno;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +29,7 @@ public class AuthService {
 
     public AuthResponse login(LoginRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-        UserDetails user =  userRepository.findByCorreo(request.getUsername()).orElseThrow();
+        Usuario user =  userRepository.findByCorreo(request.getUsername()).orElseThrow();
         String token = jwtService.getToken(user);
         return AuthResponse.builder()
                 .token(token)
@@ -35,7 +37,7 @@ public class AuthService {
     }
 
     public AuthResponse register(RegisterRequest request) {
-        Usuario usuario = Usuario.builder()
+        Alumno alumno = Alumno.builder()
                 .correo(request.getCorreo())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .nombre(request.getNombre())
@@ -43,9 +45,9 @@ public class AuthService {
                 .cedula(request.getCedula())
                 .role(Role.USER)
                 .build();
-        userRepository.save(usuario);
+        userRepository.save(alumno);
         return AuthResponse.builder()
-                .token(jwtService.getToken(usuario))
+                .token(jwtService.getToken(alumno))
                 .build();
     }
 }

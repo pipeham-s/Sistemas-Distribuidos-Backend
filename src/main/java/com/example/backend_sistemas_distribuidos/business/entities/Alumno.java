@@ -1,8 +1,8 @@
 package com.example.backend_sistemas_distribuidos.business.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -10,6 +10,11 @@ import java.util.List;
 @Table(name = "alumnos")
 @Getter
 @Setter
+@Data
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+
 public class Alumno extends Usuario {
 
     // Relación con Clase (clases recibidas)

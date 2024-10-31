@@ -1,5 +1,6 @@
 package com.example.backend_sistemas_distribuidos.business.utils;
 
+import com.example.backend_sistemas_distribuidos.business.entities.Usuario;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.io.Decoders;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,19 +21,22 @@ import javax.crypto.SecretKey;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY="UNJN2L3NI4234N2L34N23IL4N234IN23LK4N234jnbu42nni423lk4n2234hjb23kbu4234kl23b4ui23b4k23bu42k34bDOBLETONKA";
+    private static final String SECRET_KEY="b7j1Dk8L3zQp0xT5v9FgJ6yZcW2LmA942073492340230472930472093742j423h4k2n34kn2j34k3490qN";
 
-    public String getToken(UserDetails usuario) {
+    public String getToken(Usuario usuario) {
         return getToken(new HashMap<>(), usuario);
     }
-    private String getToken(Map<String, Object> extraClaims, UserDetails usuario){
+    private String getToken(Map<String, Object> extraClaims, Usuario usuario){
         return Jwts
                 .builder()
-                .setClaims(extraClaims)
-                .setSubject(usuario.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+86400000 ))
-                .signWith(getKey(), SignatureAlgorithm.HS256)
+                .claims(extraClaims)
+                .claim("id",usuario.getId())
+                .claim("cedula",usuario.getCedula())
+                .claim("role",usuario.getRole())
+                .subject(usuario.getUsername())
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis()+86400000 ))
+                .signWith(getKey())
                 .compact();
 
 
