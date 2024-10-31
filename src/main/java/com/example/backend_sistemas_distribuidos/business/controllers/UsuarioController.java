@@ -50,7 +50,7 @@ public class UsuarioController {
             String nombre = registerRequest.getNombre();
             String apellido = registerRequest.getApellido();
             String correo = registerRequest.getCorreo();
-            String cedula = registerRequest.getCedula();
+            Long cedula = registerRequest.getCedula();
             String contrasena = registerRequest.getPassword();
             System.out.println("entro");
             Usuario usuario = usuarioManager.crearUsuario(nombre, apellido, cedula , correo, contrasena);

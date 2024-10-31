@@ -16,7 +16,7 @@ public class RegisterRequest {
 
     private String apellido;
 
-    private String cedula;
+    private Long cedula;
 
 
 

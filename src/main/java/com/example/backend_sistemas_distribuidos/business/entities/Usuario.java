@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,29 +28,41 @@ public class Usuario  implements UserDetails {
     @Getter
     @Setter
     private Long id;
+
     @Column( nullable = false)  // Asegura que el nombre sea único y no nulo
     @Getter
     @Setter
     private String nombre;
+
     @Column( nullable = false)  // Asegura que el nombre sea único y no nulo
     @Getter
     private String apellido;
+
     @Column(unique = true, nullable = false)  // Asegura que el nombre sea único y no nulo
     @Getter
     @Setter
-    private String cedula;
+    private Long cedula;
+
     @Column( nullable = false)  // Asegura que el nombre sea único y no nulo
     @Getter
     @Setter
     private String correo;
+
     @Column( nullable = false)  // Asegura que el nombre sea único y no nulo
     @Getter
     @Setter
     private String password;
+
     @Enumerated(EnumType.STRING)
     @Getter
     @Setter
     private Role role;
+
+    @ManyToMany(mappedBy = "usuariosProfesores", fetch = FetchType.LAZY)
+    @Getter
+    @Setter
+    private List<Materia> materias;
+
 
 
     @Override
@@ -71,5 +84,15 @@ public class Usuario  implements UserDetails {
 
     @Override
     public boolean isEnabled() {return true;}
+
+    public void agregarMateria(Materia materia) {
+        if (this.materias == null) {
+            this.materias = new ArrayList<>();
+        }
+        if (!this.materias.contains(materia)) {
+            this.materias.add(materia);
+            materia.getUsuariosProfesores().add(this);
+        }
+    }
 }
 
