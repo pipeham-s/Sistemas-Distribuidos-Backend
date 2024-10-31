@@ -22,9 +22,6 @@ public class SolicitudMateria {
     @GenericGenerator(name = "solicitud_materia_id", strategy = "increment")
     private Long id;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "fecha_creacion", nullable = false)
-    private Date fechaCreacion;
 
     @Column(name = "estado_solicitud",nullable = false)
     @Enumerated(EnumType.STRING)

@@ -31,11 +31,11 @@ public class UsuarioMgr {
 
 
 }
-    public Usuario crearUsuario(String nombre, String apellido, String cedula, String correo, String contrasena) throws InvalidInformation, EntidadNoExiste {
+    public Usuario crearUsuario(String nombre, String apellido, Long cedula, String correo, String contrasena) throws InvalidInformation, EntidadNoExiste {
         // Verificar si algún campo es nulo o está vacío
         if (nombre == null || nombre.isEmpty() ||
                 apellido == null || apellido.isEmpty() ||
-                cedula == null || cedula.isEmpty() ||
+                cedula == null ||
                 correo == null || correo.isEmpty() ||
                 contrasena == null || contrasena.isEmpty()) {
             throw new InvalidInformation("Datos vacíos o nulos");

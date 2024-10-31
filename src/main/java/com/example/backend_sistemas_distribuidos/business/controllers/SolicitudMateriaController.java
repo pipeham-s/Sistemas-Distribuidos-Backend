@@ -1,5 +1,6 @@
 package com.example.backend_sistemas_distribuidos.business.controllers;
 
+import com.example.backend_sistemas_distribuidos.business.entities.SolicitudMateria;
 import com.example.backend_sistemas_distribuidos.business.managers.SolicitudMateriaMgr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.example.backend_sistemas_distribuidos.business.exceptions.EntidadNoExiste;
 import com.example.backend_sistemas_distribuidos.business.exceptions.InvalidInformation;
+
+import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -23,12 +27,10 @@ public class SolicitudMateriaController {
     private static final Logger logger = LoggerFactory.getLogger(SolicitudMateriaController.class);
 
     @PostMapping("/crear")
-    public ResponseEntity<?> crearSolicitudMateria(@RequestBody Long cedulaUsuario, String nombreMateria) {
+    public ResponseEntity<?> crearSolicitudMateria(@RequestBody Map<String,Object> payload) {
         try {
-            // Validar y desglosar el payload
-            if (cedulaUsuario == null || nombreMateria == null || nombreMateria.trim().isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Datos incompletos para crear la solicitud.");
-            }
+            Long cedulaUsuario = payload.get("cedulaUsuario") == null ? null : Long.parseLong(payload.get("cedulaUsuario").toString().trim());
+            String nombreMateria = (String)payload.get("nombreMateria");
 
             // Log para verificación de los valores antes de crear la solicitud
             logger.info("Intentando crear solicitud para cédula: {}, materia: {}", cedulaUsuario, nombreMateria);
@@ -57,7 +59,18 @@ public class SolicitudMateriaController {
     }
 
     @GetMapping("/pendientes")
-    public ResponseEntity<?> obtenerSolicitudesPendientes() {
+    public ResponseEntity<List<SolicitudMateria>> obtenerSolicitudesPendientes() {
+        try {
+// Llamar al manager para obtener las solicitudes pendientes
+            List<SolicitudMateria> solicitudesPendientes = solicitudMateriaMgr.obtenerSolicitudesPendientes();
+            System.out.println("solicitudes obtenidas: " + solicitudesPendientes);
+
+            // Retornar la respuesta
+            return new ResponseEntity<>(solicitudesPendientes, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
 
     }
 

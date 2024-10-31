@@ -12,14 +12,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SolicitudMateriaRepository extends CrudRepository<SolicitudMateria, Long>{
-Optional<List<SolicitudMateria>> findAllByUsuarioCedula(Long cedula);
+    //Optional<List<SolicitudMateria>> findAllByAlumnoId(Long cedula);
 
     List<SolicitudMateria> findAllByMateriaId(Long id);
 
     List<SolicitudMateria> findAllByEstado(SolicitudMateria.EstadoSolicitud estado);
 
-    Optional<SolicitudMateria> findByUsuarioAndMateria(Usuario usuario, Materia materia);
+    Optional<SolicitudMateria> findByAlumnoAndMateria(Usuario alumno, Materia materia);
 
-    @Query("SELECT sm FROM SolicitudMateria sm JOIN FETCH sm.usuario u JOIN FETCH sm.materia m WHERE sm.id = :id")
+    @Query("SELECT sm FROM SolicitudMateria sm JOIN FETCH sm.alumno u JOIN FETCH sm.materia m WHERE sm.id = :id")
     Optional<SolicitudMateria> findByIdWithUsuarioAndMateria(@Param("id") Long id);
 }

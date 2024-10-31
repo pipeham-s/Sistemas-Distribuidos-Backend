@@ -60,9 +60,10 @@ public class SolicitudMateriaMgr {
         SolicitudMateria solicitud = SolicitudMateria.builder()
             .alumno(usuario)
             .materia(materia)
-            .fechaCreacion(new Date())
+            .estado(SolicitudMateria.EstadoSolicitud.PENDIENTE)
             .build();
 
+        System.out.println(solicitud.getMateria().getNombre() + solicitud.getAlumno().getNombre());
         // Guardar la solicitud
         try {
             solicitudMateriaRepository.save(solicitud);
@@ -88,5 +89,9 @@ public class SolicitudMateriaMgr {
         solicitud.setEstado(SolicitudMateria.EstadoSolicitud.APROBADA);
         solicitudMateriaRepository.save(solicitud);
         usuarioRepository.save(usuario);
+    }
+
+    public List<SolicitudMateria> obtenerSolicitudesPendientes() {
+        return solicitudMateriaRepository.findAllByEstado(SolicitudMateria.EstadoSolicitud.PENDIENTE);
     }
 }
