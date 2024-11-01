@@ -73,6 +73,28 @@ public class SolicitudMateriaController {
 
 
     }
+    @PostMapping("/aprobar/{id}")
+    public ResponseEntity<?> aprobarSolicitud(@PathVariable Long id) {
+        try {
+            // Llamar al manager para aprobar la solicitud
+            solicitudMateriaMgr.aprobarSolicitud(id);
+
+            // Log para seguimiento
+            logger.info("Estado de la solicitud actualizado a APROBADA para ID {}", id);
+            logger.info("Solicitud de materia con ID {} aprobada correctamente", id);
+
+            // Retornar la respuesta
+            return ResponseEntity.ok("Solicitud de materia aprobada correctamente");
+        } catch (EntidadNoExiste e) {
+            // Log del error con mensaje específico
+            logger.error("Error al aprobar solicitud de materia: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            // Log de errores generales no manejados
+            logger.error("Error inesperado al aprobar solicitud de materia: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error inesperado al aprobar solicitud de materia");
+        }
+    }
 
 
 

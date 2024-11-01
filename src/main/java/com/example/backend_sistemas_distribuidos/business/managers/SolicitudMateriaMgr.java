@@ -82,7 +82,6 @@ public class SolicitudMateriaMgr {
     public void aprobarSolicitud(Long idSolicitud) throws EntidadNoExiste {
         // Buscar la solicitud por su ID
         SolicitudMateria solicitud = solicitudMateriaRepository.findByIdWithUsuarioAndMateria(idSolicitud).orElseThrow(() -> new EntidadNoExiste("Solicitud no encontrada."));
-
         Usuario usuario = solicitud.getAlumno();
         Materia materia = solicitud.getMateria();
         usuario.agregarMateria(materia);

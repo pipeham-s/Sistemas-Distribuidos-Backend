@@ -1,6 +1,7 @@
 package com.example.backend_sistemas_distribuidos.business.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,6 +27,7 @@ public class Materia {
             joinColumns = @JoinColumn(name = "materia_id"),
             inverseJoinColumns = @JoinColumn(name = "alumno_id")
     )
+    @JsonBackReference
     private List<Usuario> usuariosProfesores;
 
 

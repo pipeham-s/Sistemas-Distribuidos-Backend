@@ -20,6 +20,9 @@ public interface SolicitudMateriaRepository extends CrudRepository<SolicitudMate
 
     Optional<SolicitudMateria> findByAlumnoAndMateria(Usuario alumno, Materia materia);
 
+    Optional<SolicitudMateria> findSolicitudMateiraById(Long id);
+
+
     @Query("SELECT sm FROM SolicitudMateria sm JOIN FETCH sm.alumno u JOIN FETCH sm.materia m WHERE sm.id = :id")
     Optional<SolicitudMateria> findByIdWithUsuarioAndMateria(@Param("id") Long id);
 }
