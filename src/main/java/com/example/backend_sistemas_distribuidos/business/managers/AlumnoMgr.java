@@ -22,10 +22,29 @@ public class AlumnoMgr {
      * @return Lista de nombres de los alumnos que pueden impartir la materia.
      */
     public List<String> obtenerAlumnosPorMateria(String nombreMateria) {
-        return ((List<Alumno>) alumnoRepository.findAll()).stream()
-                .filter(alumno -> alumno.getMateriasHabilitadas().stream()
-                        .anyMatch(materia -> materia.getNombre().equalsIgnoreCase(nombreMateria)))
-                .map(Alumno::getNombre)
+        System.out.println("Buscando alumnos para la materia: " + nombreMateria);
+        List<Alumno> alumnos = (List<Alumno>) alumnoRepository.findAll();
+        System.out.println("Número total de alumnos encontrados: " + alumnos.size());
+
+        List<String> alumnosQuePuedenImpartir = alumnos.stream()
+                .filter(alumno -> {
+                    System.out.println("Verificando materias habilitadas para el alumno: " + alumno.getNombre());
+                    boolean tieneMateria = alumno.getMateriasHabilitadas().stream()
+                            .anyMatch(materia -> {
+                                String materiaNombreTrimmed = materia.getNombre().trim();
+                                String nombreMateriaTrimmed = nombreMateria.trim();
+                                System.out.println("Comparando materia: " + materiaNombreTrimmed + " con " + nombreMateriaTrimmed);
+                                return materiaNombreTrimmed.equalsIgnoreCase(nombreMateriaTrimmed);
+                            });
+                    if (tieneMateria) {
+                        System.out.println("El alumno " + alumno.getNombre() + " puede impartir la materia " + nombreMateria);
+                    }
+                    return tieneMateria;
+                })
+                .map(alumno -> alumno.getNombre() + " " + alumno.getApellido())
                 .collect(Collectors.toList());
+
+        System.out.println("Número de alumnos que pueden impartir la materia: " + alumnosQuePuedenImpartir.size());
+        return alumnosQuePuedenImpartir;
     }
 }
