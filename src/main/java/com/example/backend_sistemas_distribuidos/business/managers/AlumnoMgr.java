@@ -5,8 +5,11 @@ import com.example.backend_sistemas_distribuidos.persistance.AlumnoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.HashMap;
 
 @Service
 public class AlumnoMgr {
@@ -21,12 +24,14 @@ public class AlumnoMgr {
      * @param nombreMateria Nombre de la materia.
      * @return Lista de nombres de los alumnos que pueden impartir la materia.
      */
-    public List<String> obtenerAlumnosPorMateria(String nombreMateria) {
+
+
+    public List<Map<String, Object>> obtenerAlumnosPorMateria(String nombreMateria) {
         System.out.println("Buscando alumnos para la materia: " + nombreMateria);
         List<Alumno> alumnos = (List<Alumno>) alumnoRepository.findAll();
         System.out.println("Número total de alumnos encontrados: " + alumnos.size());
 
-        List<String> alumnosQuePuedenImpartir = alumnos.stream()
+        List<Map<String, Object>> alumnosQuePuedenImpartir = alumnos.stream()
                 .filter(alumno -> {
                     System.out.println("Verificando materias habilitadas para el alumno: " + alumno.getNombre());
                     boolean tieneMateria = alumno.getMateriasHabilitadas().stream()
@@ -41,7 +46,12 @@ public class AlumnoMgr {
                     }
                     return tieneMateria;
                 })
-                .map(alumno -> alumno.getNombre() + " " + alumno.getApellido())
+                .map(alumno -> {
+                    Map<String, Object> alumnoInfo = new HashMap<>();
+                    alumnoInfo.put("cedula", alumno.getCedula());
+                    alumnoInfo.put("nombreCompleto", alumno.getNombre() + " " + alumno.getApellido());
+                    return alumnoInfo;
+                })
                 .collect(Collectors.toList());
 
         System.out.println("Número de alumnos que pueden impartir la materia: " + alumnosQuePuedenImpartir.size());

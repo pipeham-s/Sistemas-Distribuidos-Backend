@@ -95,6 +95,21 @@ public class SolicitudMateriaController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error inesperado al aprobar solicitud de materia");
         }
     }
+    @GetMapping("/pendientes/{cedula}")
+    public ResponseEntity<List<SolicitudMateria>> obtenerSolicitudesPendientesPorCedula(@PathVariable Long cedula) {
+        try {
+            // Llamar al manager para obtener las solicitudes pendientes de la cédula proporcionada
+            List<SolicitudMateria> solicitudesPendientes = solicitudMateriaMgr.obtenerSolicitudesPersona(cedula);
+            logger.info("Solicitudes pendientes obtenidas para la cédula: {}", cedula);
+
+            // Retornar la respuesta con las solicitudes encontradas
+            return ResponseEntity.ok(solicitudesPendientes);
+        } catch (Exception e) {
+            // Log de errores generales no manejados
+            logger.error("Error inesperado al obtener solicitudes de materia pendientes: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 
 
 

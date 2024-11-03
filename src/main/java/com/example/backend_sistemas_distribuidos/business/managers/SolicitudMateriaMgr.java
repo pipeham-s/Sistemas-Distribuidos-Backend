@@ -1,9 +1,11 @@
 package com.example.backend_sistemas_distribuidos.business.managers;
 
+import com.example.backend_sistemas_distribuidos.business.entities.Alumno;
 import com.example.backend_sistemas_distribuidos.business.entities.SolicitudMateria;
 import com.example.backend_sistemas_distribuidos.business.entities.Usuario;
 import com.example.backend_sistemas_distribuidos.business.exceptions.EntidadNoExiste;
 import com.example.backend_sistemas_distribuidos.business.exceptions.InvalidInformation;
+import com.example.backend_sistemas_distribuidos.persistance.AlumnoRepository;
 import com.example.backend_sistemas_distribuidos.persistance.SolicitudMateriaRepository;
 import com.example.backend_sistemas_distribuidos.persistance.UsuarioRepository;
 import com.example.backend_sistemas_distribuidos.persistance.MateriaRepository;
@@ -27,8 +29,13 @@ public class SolicitudMateriaMgr {
     @Autowired
     private SolicitudMateriaRepository solicitudMateriaRepository;
 
+
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+
+    @Autowired
+    private AlumnoRepository alumnoRepository;
 
     @Autowired
     private MateriaRepository materiaRepository;
@@ -92,5 +99,9 @@ public class SolicitudMateriaMgr {
 
     public List<SolicitudMateria> obtenerSolicitudesPendientes() {
         return solicitudMateriaRepository.findAllByEstado(SolicitudMateria.EstadoSolicitud.PENDIENTE);
+    }
+    public List<SolicitudMateria> obtenerSolicitudesPersona(Long cedula) throws EntidadNoExiste {
+        Alumno alumno = alumnoRepository.findOneByCedula(cedula).orElseThrow(() -> new EntidadNoExiste("Solicitud no encontrada."));
+        return solicitudMateriaRepository.findAllByAlumno(alumno);
     }
 }

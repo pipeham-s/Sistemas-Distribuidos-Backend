@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -28,12 +31,12 @@ public class SolicitudClase {
         private com.example.backend_sistemas_distribuidos.business.entities.SolicitudClase.EstadoSolicitud estado;
 
         @ManyToOne(fetch = FetchType.EAGER)
-        @JoinColumn(name = "alumno_id", nullable = false)
+        @JoinColumn(name = "alumno_cedula", nullable = false)
         @JsonManagedReference
         private Alumno alumno;
 
         @ManyToOne(fetch = FetchType.EAGER)
-        @JoinColumn(name = "profesor_id", nullable = false)
+        @JoinColumn(name = "profesor_cedula", nullable = false)
         @JsonManagedReference
         private Alumno profesor;
 
@@ -41,6 +44,9 @@ public class SolicitudClase {
         @JoinColumn(name = "materia_id", nullable = false)
         @JsonManagedReference
         private Materia materia;
+
+        @Column(name = "fecha_solicitud", nullable = false)
+        private Date fechaSolicitud;
 
         public enum EstadoSolicitud {
             PENDIENTE,

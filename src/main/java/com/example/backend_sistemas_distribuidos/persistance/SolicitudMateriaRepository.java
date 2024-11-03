@@ -18,6 +18,9 @@ public interface SolicitudMateriaRepository extends CrudRepository<SolicitudMate
 
     List<SolicitudMateria> findAllByEstado(SolicitudMateria.EstadoSolicitud estado);
 
+    List<SolicitudMateria> findAllByAlumno(Usuario alumno);
+
+
     Optional<SolicitudMateria> findByAlumnoAndMateria(Usuario alumno, Materia materia);
 
     Optional<SolicitudMateria> findSolicitudMateiraById(Long id);

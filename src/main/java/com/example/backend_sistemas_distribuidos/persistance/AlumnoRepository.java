@@ -12,6 +12,8 @@ public interface AlumnoRepository extends CrudRepository<Alumno, Long> {
 
     Optional<Alumno> findOneById(Long id);
 
+    Optional<Alumno> findOneByCedula(Long cedula);
+
     Optional<Alumno> findOneByNombre(String nombre);
 
     boolean existsByNombre(String nombre);

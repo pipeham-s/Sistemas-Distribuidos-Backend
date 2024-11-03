@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @RestController
@@ -23,9 +24,9 @@ public class AlumnoController {
      * @return Lista de nombres de los alumnos que pueden impartir la materia.
      */
     @GetMapping("/por-materia")
-    public List<String> obtenerAlumnosPorMateria(@RequestParam String nombreMateria) {
+    public List<Map<String, Object>> obtenerAlumnosPorMateria(@RequestParam String nombreMateria) {
         logger.info("Nombre de la materia recibido: " + nombreMateria);
-        List<String> alumnos = alumnoMgr.obtenerAlumnosPorMateria(nombreMateria);
+        List<Map<String, Object>> alumnos = alumnoMgr.obtenerAlumnosPorMateria(nombreMateria);
         if (alumnos.isEmpty()) {
             logger.info("No se encontraron alumnos para la materia: " + nombreMateria);
         } else {
