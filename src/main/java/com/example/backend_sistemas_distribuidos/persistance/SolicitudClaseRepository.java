@@ -14,6 +14,10 @@ public interface SolicitudClaseRepository extends CrudRepository<SolicitudClase,
 
     List<SolicitudClase> findAllByAlumno(Alumno alumno);
 
+    List<SolicitudClase> findAllByProfesorAndEstado(Alumno profesor, SolicitudClase.EstadoSolicitud estado);
+
+
+
 
     List<SolicitudClase> findAllByEstado(SolicitudClase.EstadoSolicitud estado);
 

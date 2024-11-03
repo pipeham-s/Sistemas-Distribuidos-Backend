@@ -76,5 +76,24 @@ public class SolicitudClaseController {
         }
 
     }
+    @GetMapping("/pendientes/profesor{cedulaProfesor}")
+    public ResponseEntity<List<SolicitudClase>> obtenerSolicitudesPendientesPorProfesor(@PathVariable Long cedulaProfesor) {
+        try {
+            // Llamar al manager para obtener las solicitudes pendientes del profesor con la cédula proporcionada
+            List<SolicitudClase> solicitudesPendientes = solicitudClaseMgr.obtenerSolicitudesClasePorProfesor(cedulaProfesor);
+            logger.info("Solicitudes pendientes obtenidas para el profesor con cédula: {}", cedulaProfesor);
+
+            // Retornar la respuesta con las solicitudes encontradas
+            return ResponseEntity.ok(solicitudesPendientes);
+        } catch (EntidadNoExiste e) {
+            // Log del error cuando la entidad no existe
+            logger.error("Error al obtener solicitudes de materia pendientes para el profesor: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            // Log de errores generales no manejados
+            logger.error("Error inesperado al obtener solicitudes de materia pendientes para el profesor: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 }
 

@@ -18,6 +18,9 @@ public class SolicitudClaseMgr {
     private SolicitudClaseRepository solicitudClaseRepository;
 
     @Autowired
+    private  ClaseRepository claseRepository;
+
+    @Autowired
     private UsuarioRepository usuarioRepository;
 
     @Autowired
@@ -73,5 +76,33 @@ public class SolicitudClaseMgr {
         Alumno alumno = alumnoRepository.findOneByCedula(cedula).orElseThrow(() -> new EntidadNoExiste("alumno no encontrada."));
         System.out.println(alumno.getClasesRecibidas());
         return solicitudClaseRepository.findAllByAlumno(alumno);
+    }
+
+    public List<SolicitudClase> obtenerSolicitudesClasePorProfesor(Long cedulaProfesor) throws EntidadNoExiste {
+        Alumno profesor = alumnoRepository.findOneByCedula(cedulaProfesor)
+                .orElseThrow(() -> new EntidadNoExiste("Profesor con cédula " + cedulaProfesor + " no existe."));
+        return solicitudClaseRepository.findAllByProfesorAndEstado(profesor, SolicitudClase.EstadoSolicitud.PENDIENTE);
+    }
+
+    public void aprobarClase (Long idSolicitud) throws EntidadNoExiste {
+        SolicitudClase solicitudClase = solicitudClaseRepository.findById(idSolicitud)
+                .orElseThrow(() -> new EntidadNoExiste("Profesor con cédula " + idSolicitud + " no existe."));
+        Alumno alumno = alumnoRepository.findOneById(solicitudClase.getAlumno().getId())
+                .orElseThrow(() -> new EntidadNoExiste("Profesor con cédula " + idSolicitud + " no existe."));
+        Alumno profesor=  alumnoRepository.findOneById(solicitudClase.getProfesor().getId())
+                .orElseThrow(() -> new EntidadNoExiste("Profesor con cédula " + idSolicitud + " no existe."));
+        Date fecha = solicitudClase.getFechaSolicitud();
+        Materia materia = solicitudClase.getMateria();
+
+        Clase nuevaClase = Clase.builder()
+                .alumno(alumno)
+                .profesor(profesor)
+                .materia(materia)
+                .fecha(fecha)
+                .build();
+        claseRepository.save(nuevaClase);
+        System.out.println("Clase creada y guardada con éxito");
+
+
     }
 }
