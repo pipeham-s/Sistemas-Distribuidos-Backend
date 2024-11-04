@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.example.backend_sistemas_distribuidos.business.exceptions.EntidadNoExiste;
 import com.example.backend_sistemas_distribuidos.business.exceptions.InvalidInformation;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Date;
@@ -33,9 +34,9 @@ public class SolicitudClaseController {
             Long cedulaAlumno = payload.get("cedulaAlumno") == null ? null : Long.parseLong(payload.get("cedulaAlumno").toString().trim());
             Long cedulaProfesor = payload.get("cedulaProfesor") == null ? null : Long.parseLong(payload.get("cedulaProfesor").toString().trim());
             String nombreMateria = (String) payload.get("nombreMateria");
-            Date fechaSolicitud = new Date(); // Fecha actual
+            Date fechaSolicitud = payload.get("fecha") == null ? null : new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").parse(payload.get("fecha").toString());
 
-            // Log para verificación de los valores antes de crear la solicitud
+            // Log para verificación de lo  s valores antes de crear la solicitud
             logger.info("Intentando crear solicitud de clase para alumno cédula: {}, profesor cédula: {}, materia: {}", cedulaAlumno, cedulaProfesor, nombreMateria);
 
             // Llamar al manager para crear la solicitud

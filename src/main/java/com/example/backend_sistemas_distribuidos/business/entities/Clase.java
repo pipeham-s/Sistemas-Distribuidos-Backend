@@ -1,17 +1,17 @@
 package com.example.backend_sistemas_distribuidos.business.entities;
 
-
-
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
+
 @Builder
 @NoArgsConstructor // Constructor sin argumentos
 @AllArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "clases")
 public class Clase {
@@ -21,7 +21,6 @@ public class Clase {
     private Long id;
 
     private Date fecha;
-    private String hora;
 
     // Relación con Materia
     @ManyToOne
@@ -31,13 +30,15 @@ public class Clase {
     // Relación con Alumno (Recibe la clase)
     @ManyToOne
     @JoinColumn(name = "alumno_id")
-    private Alumno alumno;
+    @JsonIgnoreProperties({"clasesRecibidas", "clasesImpartidas", "materiasHabilitadas"})    private Alumno alumno;
 
     // Relación con Profesor (Usuario que dicta la clase)
     @ManyToOne
     @JoinColumn(name = "profesor_id")
-    private Usuario profesor;
-
-
+    @JsonIgnoreProperties({"clasesImpartidas", "clasesRecibidas", "materiasHabilitadas"})
+    private Alumno profesor;
 }
+
+
+
 
