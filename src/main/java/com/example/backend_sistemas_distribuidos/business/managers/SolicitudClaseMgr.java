@@ -83,6 +83,35 @@ public class SolicitudClaseMgr {
                 .orElseThrow(() -> new EntidadNoExiste("Profesor con cédula " + cedulaProfesor + " no existe."));
         return solicitudClaseRepository.findAllByProfesorAndEstado(profesor, SolicitudClase.EstadoSolicitud.PENDIENTE);
     }
+    public void aprobarSolicitudClase (Long idSolicitud) throws EntidadNoExiste {
+        SolicitudClase solicitudClase = solicitudClaseRepository.findById(idSolicitud)
+                .orElseThrow(() -> new EntidadNoExiste("Solicitud no encontrada."));
+        Alumno alumno = solicitudClase.getAlumno();
+        Alumno profesor = solicitudClase.getProfesor();
+        Materia materia = solicitudClase.getMateria();
+        Date fecha = solicitudClase.getFechaSolicitud();
+        System.out.println(solicitudClase.getEstado());
+        solicitudClase.setEstado(SolicitudClase.EstadoSolicitud.APROBADA);
+        System.out.println(solicitudClase.getEstado());
+        Clase clase = Clase.builder()
+                .alumno(alumno)
+                .profesor(profesor)
+                .materia(materia)
+                .fecha(fecha)
+                .build();
+        claseRepository.save(clase);
+        alumno.getClasesRecibidas().add(clase);
+        profesor.getClasesImpartidas().add(clase);;
+        alumnoRepository.save(alumno);
+        alumnoRepository.save(profesor);
+        solicitudClaseRepository.save(solicitudClase);
+        System.out.println(alumno.getClasesRecibidas());
+        System.out.println(profesor.getClasesImpartidas());
+
+
+
+    }
+
 
 
 }

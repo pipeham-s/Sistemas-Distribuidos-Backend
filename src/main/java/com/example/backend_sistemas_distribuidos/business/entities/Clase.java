@@ -4,9 +4,14 @@ package com.example.backend_sistemas_distribuidos.business.entities;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
-
+@Builder
+@NoArgsConstructor // Constructor sin argumentos
+@AllArgsConstructor
 @Entity
 @Table(name = "clases")
 public class Clase {

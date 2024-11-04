@@ -95,5 +95,23 @@ public class SolicitudClaseController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+    @PostMapping("/aceptar/{id}")
+    public ResponseEntity<?> aceptarClase(@PathVariable("id") Long solicitudId) {
+        try {
+            // Llamar al manager para aprobar la solicitud
+            solicitudClaseMgr.aprobarSolicitudClase(solicitudId);
+
+            return ResponseEntity.ok("Solicitud de clase aprobada correctamente");
+        } catch (EntidadNoExiste e) {
+            // Log del error con mensaje específico
+            logger.error("Error al aprobar solicitud de materia: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            // Log de errores generales no manejados
+            logger.error("Error inesperado al aprobar solicitud de materia: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error inesperado al aprobar solicitud de materia");
+        }
+
+    }
 }
 
