@@ -63,6 +63,18 @@ public class SolicitudMateriaMgr {
         Materia materia = materiaRepository.findOneByNombre(nombreMateria.trim())
             .orElseThrow(() -> new EntidadNoExiste("Materia no encontrada con el nombre: " + nombreMateria));
 
+        //Verificar si ya existe una solicitud pendiente para la materia de este usuario o ya lo tiene habilitado
+        Optional<SolicitudMateria> solicitudExistente = solicitudMateriaRepository.findByAlumnoAndMateria(usuario, materia);
+        if (solicitudExistente.isPresent()) {
+            if (solicitudExistente.get().getEstado() == SolicitudMateria.EstadoSolicitud.PENDIENTE) {
+                throw new InvalidInformation("Ya existe una solicitud pendiente para la materia: " + nombreMateria);
+            }
+            else if(solicitudExistente.get().getEstado() == SolicitudMateria.EstadoSolicitud.APROBADA) {
+                throw new InvalidInformation("Ya tiene la materia habilitada: " + nombreMateria);
+            }
+
+        }
+
         // Crear la solicitud
         SolicitudMateria solicitud = SolicitudMateria.builder()
             .alumno(usuario)
