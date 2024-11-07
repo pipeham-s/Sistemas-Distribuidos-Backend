@@ -111,6 +111,29 @@ public class SolicitudMateriaController {
         }
     }
 
+    @PostMapping("/rechazar/{id}")
+    public ResponseEntity<?> rechazarSolicitud(@PathVariable Long id) {
+        try {
+            // Llamar al manager para rechazar la solicitud
+            solicitudMateriaMgr.rechazarSolicitud(id);
+
+            // Log para seguimiento
+            logger.info("Estado de la solicitud actualizado a RECHAZADA para ID {}", id);
+            logger.info("Solicitud de materia con ID {} rechazada correctamente", id);
+
+            // Retornar la respuesta
+            return ResponseEntity.ok("Solicitud de materia rechazada correctamente");
+        } catch (EntidadNoExiste e) {
+            // Log del error con mensaje específico
+            logger.error("Error al rechazar solicitud de materia: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            // Log de errores generales no manejados
+            logger.error("Error inesperado al rechazar solicitud de materia: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error inesperado al rechazar solicitud de materia");
+        }
+    }
+
 
 
 

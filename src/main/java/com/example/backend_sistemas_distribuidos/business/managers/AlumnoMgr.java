@@ -26,33 +26,42 @@ public class AlumnoMgr {
      */
 
 
-    public List<Map<String, Object>> obtenerAlumnosPorMateria(String nombreMateria) {
+    public List<Map<String, Object>> obtenerAlumnosPorMateria(String nombreMateria, Long cedula) {
         System.out.println("Buscando alumnos para la materia: " + nombreMateria);
         List<Alumno> alumnos = (List<Alumno>) alumnoRepository.findAll();
+        Alumno alumno1 = alumnoRepository.findOneByCedula(cedula).get();
         System.out.println("Número total de alumnos encontrados: " + alumnos.size());
 
         List<Map<String, Object>> alumnosQuePuedenImpartir = alumnos.stream()
-                .filter(alumno -> {
-                    System.out.println("Verificando materias habilitadas para el alumno: " + alumno.getNombre());
-                    boolean tieneMateria = alumno.getMateriasHabilitadas().stream()
-                            .anyMatch(materia -> {
-                                String materiaNombreTrimmed = materia.getNombre().trim();
-                                String nombreMateriaTrimmed = nombreMateria.trim();
-                                System.out.println("Comparando materia: " + materiaNombreTrimmed + " con " + nombreMateriaTrimmed);
-                                return materiaNombreTrimmed.equalsIgnoreCase(nombreMateriaTrimmed);
-                            });
-                    if (tieneMateria) {
-                        System.out.println("El alumno " + alumno.getNombre() + " puede impartir la materia " + nombreMateria);
-                    }
-                    return tieneMateria;
-                })
-                .map(alumno -> {
-                    Map<String, Object> alumnoInfo = new HashMap<>();
-                    alumnoInfo.put("cedula", alumno.getCedula());
-                    alumnoInfo.put("nombreCompleto", alumno.getNombre() + " " + alumno.getApellido());
-                    return alumnoInfo;
-                })
-                .collect(Collectors.toList());
+            .filter(alumno -> {
+                // Verificar si el alumno actual es distinto de alumno1
+                if (alumno.equals(alumno1)) {
+                    System.out.println("Excluyendo al alumno: " + alumno.getNombre());
+                    return false; // Excluir alumno1
+                }
+
+                System.out.println("Verificando materias habilitadas para el alumno: " + alumno.getNombre());
+                boolean tieneMateria = alumno.getMateriasHabilitadas().stream()
+                    .anyMatch(materia -> {
+                        String materiaNombreTrimmed = materia.getNombre().trim();
+                        String nombreMateriaTrimmed = nombreMateria.trim();
+                        System.out.println("Comparando materia: " + materiaNombreTrimmed + " con " + nombreMateriaTrimmed);
+                        return materiaNombreTrimmed.equalsIgnoreCase(nombreMateriaTrimmed);
+                    });
+
+                if (tieneMateria) {
+                    System.out.println("El alumno " + alumno.getNombre() + " puede impartir la materia " + nombreMateria);
+                }
+                return tieneMateria;
+            })
+            .map(alumno -> {
+                Map<String, Object> alumnoInfo = new HashMap<>();
+                alumnoInfo.put("cedula", alumno.getCedula());
+                alumnoInfo.put("nombreCompleto", alumno.getNombre() + " " + alumno.getApellido());
+                return alumnoInfo;
+            })
+            .collect(Collectors.toList());
+
 
         System.out.println("Número de alumnos que pueden impartir la materia: " + alumnosQuePuedenImpartir.size());
         return alumnosQuePuedenImpartir;

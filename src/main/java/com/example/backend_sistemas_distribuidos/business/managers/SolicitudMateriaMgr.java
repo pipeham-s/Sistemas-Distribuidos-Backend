@@ -116,4 +116,10 @@ public class SolicitudMateriaMgr {
         Alumno alumno = alumnoRepository.findOneByCedula(cedula).orElseThrow(() -> new EntidadNoExiste("Solicitud no encontrada."));
         return solicitudMateriaRepository.findAllByAlumno(alumno);
     }
+
+    public void rechazarSolicitud(Long idSolicitud) throws EntidadNoExiste {
+        SolicitudMateria solicitud = solicitudMateriaRepository.findByIdWithUsuarioAndMateria(idSolicitud).orElseThrow(() -> new EntidadNoExiste("Solicitud no encontrada."));
+        solicitud.setEstado(SolicitudMateria.EstadoSolicitud.RECHAZADA);
+        solicitudMateriaRepository.save(solicitud);
+    }
 }

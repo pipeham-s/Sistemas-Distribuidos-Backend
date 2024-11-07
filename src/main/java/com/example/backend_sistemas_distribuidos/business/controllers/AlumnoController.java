@@ -24,9 +24,9 @@ public class AlumnoController {
      * @return Lista de nombres de los alumnos que pueden impartir la materia.
      */
     @GetMapping("/por-materia")
-    public List<Map<String, Object>> obtenerAlumnosPorMateria(@RequestParam String nombreMateria) {
+    public List<Map<String, Object>> obtenerAlumnosPorMateria(@RequestParam String nombreMateria, Long cedula) {
         logger.info("Nombre de la materia recibido: " + nombreMateria);
-        List<Map<String, Object>> alumnos = alumnoMgr.obtenerAlumnosPorMateria(nombreMateria);
+        List<Map<String, Object>> alumnos = alumnoMgr.obtenerAlumnosPorMateria(nombreMateria,cedula);
         if (alumnos.isEmpty()) {
             logger.info("No se encontraron alumnos para la materia: " + nombreMateria);
         } else {
