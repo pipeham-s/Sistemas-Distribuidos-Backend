@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SolicitudClaseMgr {
@@ -107,11 +108,11 @@ public class SolicitudClaseMgr {
         solicitudClaseRepository.save(solicitudClase);
         System.out.println(alumno.getClasesRecibidas());
         System.out.println(profesor.getClasesImpartidas());
-
-
-
     }
 
-
-
+    public void rechazarSolicitudClase(Long idSolicitud) throws EntidadNoExiste {
+        SolicitudClase solicitudClase = solicitudClaseRepository.findById(idSolicitud).orElseThrow(() -> new EntidadNoExiste("Solicitud no encontrada."));
+        solicitudClase.setEstado(SolicitudClase.EstadoSolicitud.RECHAZADA);
+        solicitudClaseRepository.save(solicitudClase);
+    }
 }

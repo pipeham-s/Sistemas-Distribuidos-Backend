@@ -118,7 +118,7 @@ public class SolicitudMateriaMgr {
     }
 
     public void rechazarSolicitud(Long idSolicitud) throws EntidadNoExiste {
-        SolicitudMateria solicitud = solicitudMateriaRepository.findByIdWithUsuarioAndMateria(idSolicitud).orElseThrow(() -> new EntidadNoExiste("Solicitud no encontrada."));
+        SolicitudMateria solicitud = solicitudMateriaRepository.findById(idSolicitud).orElseThrow(() -> new EntidadNoExiste("Solicitud no encontrada."));
         solicitud.setEstado(SolicitudMateria.EstadoSolicitud.RECHAZADA);
         solicitudMateriaRepository.save(solicitud);
     }

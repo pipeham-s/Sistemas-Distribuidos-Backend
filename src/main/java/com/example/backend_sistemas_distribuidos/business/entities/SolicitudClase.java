@@ -31,12 +31,12 @@ public class SolicitudClase {
         private com.example.backend_sistemas_distribuidos.business.entities.SolicitudClase.EstadoSolicitud estado;
 
         @ManyToOne(fetch = FetchType.EAGER)
-        @JoinColumn(name = "alumno_cedula", nullable = false)
+        @JoinColumn(name = "alumno_id", nullable = false)
         @JsonManagedReference
         private Alumno alumno;
 
         @ManyToOne(fetch = FetchType.EAGER)
-        @JoinColumn(name = "profesor_cedula", nullable = false)
+        @JoinColumn(name = "profesor_id", nullable = false)
         @JsonManagedReference
         private Alumno profesor;
 
