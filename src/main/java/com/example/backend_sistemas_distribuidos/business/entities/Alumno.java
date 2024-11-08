@@ -11,30 +11,37 @@ import java.util.List;
 @Table(name = "alumnos")
 @Getter
 @Setter
-@Data
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Alumno extends Usuario {
 
     // Relación con Clase (clases recibidas)
-    @Getter
     @OneToMany(mappedBy = "alumno", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference(value = "alumno-clases")
     private List<Clase> clasesRecibidas;
 
     // Relación con Clase (clases impartidas)
-    @Getter
     @OneToMany(mappedBy = "profesor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference(value = "profesor-clases")
     private List<Clase> clasesImpartidas;
 
     // Relación con Materia (materias habilitadas)
-    @Getter
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "materias_de_un_alumno", joinColumns = @JoinColumn(name = "alumno_id"), inverseJoinColumns = @JoinColumn(name = "materia_id"))
     @JsonManagedReference
     private List<Materia> materiasHabilitadas;
 
+    // Relación con mensajes enviados
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value = "alumno-mensajes-enviados")
+    private List<ChatMessage> mensajesEnviados;
+
+    // Relación con mensajes recibidos
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value = "alumno-mensajes-recibidos")
+    private List<ChatMessage> mensajesRecibidos;
 }
+
+
 
