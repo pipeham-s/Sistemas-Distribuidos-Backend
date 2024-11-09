@@ -1,14 +1,14 @@
 package com.example.backend_sistemas_distribuidos.business.controllers;
 
-import com.example.backend_sistemas_distribuidos.business.dto.ChatMessageDTO;
-import com.example.backend_sistemas_distribuidos.business.entities.ChatMessage;
-import com.example.backend_sistemas_distribuidos.business.entities.Alumno;
-import com.example.backend_sistemas_distribuidos.persistance.AlumnoRepository;
+import com.example.backend_sistemas_distribuidos.business.entities.dto.ChatMessageDTO;
+import com.example.backend_sistemas_distribuidos.business.entities.dto.ConversationDTO;
 import com.example.backend_sistemas_distribuidos.business.managers.ChatMessageMgr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
+
+import java.util.List;
 
 @Controller
 public class ChatController {
@@ -16,26 +16,28 @@ public class ChatController {
     @Autowired
     private ChatMessageMgr chatMessageMgr;
 
-    @Autowired
-    private AlumnoRepository alumnoRepository;
-
     @MessageMapping("/send")
-    @SendTo("/topic/messages")
-    public ChatMessage handleMessage(ChatMessageDTO chatMessageDTO) {
-        // Buscar los alumnos remitente y receptor
-        Alumno sender = alumnoRepository.findById(chatMessageDTO.getSenderId())
-                .orElseThrow(() -> new IllegalArgumentException("El remitente con ID " + chatMessageDTO.getSenderId() + " no existe."));
-        Alumno receiver = alumnoRepository.findById(chatMessageDTO.getReceiverId())
-                .orElseThrow(() -> new IllegalArgumentException("El destinatario con ID " + chatMessageDTO.getReceiverId() + " no existe."));
+    public void handleMessage(ChatMessageDTO chatMessageDTO) {
+        ChatMessageDTO savedMessageDTO = chatMessageMgr.sendMessage(
+                chatMessageDTO.getSenderId(),
+                chatMessageDTO.getReceiverId(),
+                chatMessageDTO.getContent()
+        );
 
-        // Construir y guardar el mensaje
-        ChatMessage chatMessage = ChatMessage.builder()
-                .sender(sender)
-                .receiver(receiver)
-                .content(chatMessageDTO.getContent())
-                .build();
+        // Notificar a ambos usuarios sobre el nuevo mensaje
+        chatMessageMgr.notifyUserMessages(chatMessageDTO.getReceiverId(), savedMessageDTO);
+        chatMessageMgr.notifyUserMessages(chatMessageDTO.getSenderId(), savedMessageDTO);
+    }
 
-        // Llamar al método de negocio para procesar y guardar el mensaje
-        return chatMessageMgr.sendMessage(chatMessage.getSender().getId(), chatMessage.getReceiver().getId(), chatMessage.getContent());
+    @MessageMapping("/get-conversations")
+    @SendToUser("/queue/conversations")
+    public List<ConversationDTO> getConversations(Long userId) {
+        return chatMessageMgr.getConversations(userId);
+    }
+
+    @MessageMapping("/get-messages")
+    @SendToUser("/queue/messages")
+    public List<ChatMessageDTO> getMessages(Long conversationId) {
+        return chatMessageMgr.getMessagesByConversationId(conversationId);
     }
 }

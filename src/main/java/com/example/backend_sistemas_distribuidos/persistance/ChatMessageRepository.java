@@ -1,6 +1,7 @@
 package com.example.backend_sistemas_distribuidos.persistance;
 
 import com.example.backend_sistemas_distribuidos.business.entities.ChatMessage;
+import com.example.backend_sistemas_distribuidos.business.entities.Conversation;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,21 +11,14 @@ import java.util.Optional;
 @Repository
 public interface ChatMessageRepository extends CrudRepository<ChatMessage, Long> {
 
-    // Método para encontrar un mensaje por su ID
-    Optional<ChatMessage> findOneById(Long id);
 
-    // Método para encontrar mensajes enviados por un remitente específico
-    List<ChatMessage> findAllBySenderId(Long senderId);
+    List<ChatMessage> findBySenderIdOrReceiverId(Long senderId, Long receiverId);
 
-    // Método para encontrar mensajes recibidos por un destinatario específico
-    List<ChatMessage> findAllByReceiverId(Long receiverId);
+    Optional<ChatMessage> findTopByConversationOrderByIdDesc(Conversation conversation);
 
-    // Método para encontrar mensajes entre dos usuarios específicos
-    List<ChatMessage> findAllBySenderIdAndReceiverId(Long senderId, Long receiverId);
+    List<ChatMessage> findByConversationId(Long conversationId);
 
-    // Método para verificar si existe un mensaje con un ID específico
-    boolean existsById(Long id);
 
-    // Método para obtener todos los mensajes
-    Iterable<ChatMessage> findAll();
+
+
 }

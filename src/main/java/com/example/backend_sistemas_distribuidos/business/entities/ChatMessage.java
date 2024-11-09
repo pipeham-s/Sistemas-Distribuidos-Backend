@@ -19,13 +19,16 @@ public class ChatMessage {
 
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)
-    @JsonBackReference(value = "alumno-mensajes-enviados")
     private Alumno sender;
 
     @ManyToOne
     @JoinColumn(name = "receiver_id", nullable = false)
-    @JsonBackReference(value = "alumno-mensajes-recibidos")
     private Alumno receiver;
+
+    @ManyToOne
+    @JoinColumn(name = "conversation_id", nullable = false)
+    @JsonBackReference(value = "conversation-messages")
+    private Conversation conversation;
 
     @Column(nullable = false)
     private String content;

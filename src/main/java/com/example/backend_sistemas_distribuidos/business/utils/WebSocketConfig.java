@@ -13,9 +13,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         // Habilita un corredor de mensajes simple en "/topic"
-        config.enableSimpleBroker("/topic");
+        config.enableSimpleBroker("/topic", "/queue");
+
+        config.setUserDestinationPrefix("/user");
+
         // Prefijo para las rutas de destino de los mensajes enviados por el cliente
         config.setApplicationDestinationPrefixes("/app");
+
     }
 
     @Override
