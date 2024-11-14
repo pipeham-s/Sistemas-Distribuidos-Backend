@@ -43,7 +43,7 @@ public class AuthService {
                 .nombre(request.getNombre())
                 .apellido(request.getApellido())
                 .cedula(request.getCedula())
-                .role(Role.USER)
+                .role(Role.ADMIN)
                 .build();
         userRepository.save(alumno);
         return AuthResponse.builder()
