@@ -101,4 +101,5 @@ public class ChatMessageMgr {
                 message.getConversation().getId()
         );
     }
+    
 }
