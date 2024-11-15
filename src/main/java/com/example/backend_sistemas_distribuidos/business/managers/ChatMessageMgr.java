@@ -11,11 +11,9 @@ import com.example.backend_sistemas_distribuidos.persistance.ConversationReposit
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,7 +37,7 @@ public class ChatMessageMgr {
         Alumno receiver = alumnoRepository.findById(receiverId)
                 .orElseThrow(() -> new IllegalArgumentException("El destinatario con ID " + receiverId + " no existe."));
 
-        Conversation conversation = conversationRepository.findByParticipantOneAndParticipantTwo(sender, receiver)
+        Conversation conversation = conversationRepository.findByParticipants(sender, receiver)
                 .orElseGet(() -> {
                     Conversation newConversation = Conversation.builder()
                             .participantOne(sender)
@@ -56,38 +54,47 @@ public class ChatMessageMgr {
                 .build();
 
         ChatMessage savedMessage = chatMessageRepository.save(message);
-
         ChatMessageDTO messageDTO = toChatMessageDTO(savedMessage);
 
+        // Notificar al receptor y al remitente sobre el nuevo mensaje
         messagingTemplate.convertAndSendToUser(receiverId.toString(), "/queue/messages", messageDTO);
         messagingTemplate.convertAndSendToUser(senderId.toString(), "/queue/messages", messageDTO);
         System.out.println("Enviando mensaje a " + receiverId + " y " + senderId + ": " + messageDTO);
 
-
         return messageDTO;
     }
 
+    @Transactional(readOnly = true)
     public List<ConversationDTO> getConversations(Long userId) {
-        List<ChatMessage> messages = chatMessageRepository.findBySenderIdOrReceiverId(userId, userId);
-        Map<Long, ConversationDTO> conversationsMap = new HashMap<>();
+        List<Conversation> conversations = conversationRepository.findByParticipantOneIdOrParticipantTwoId(userId, userId);
 
-        for (ChatMessage message : messages) {
-            Long contactId = message.getSender().getId().equals(userId) ? message.getReceiver().getId() : message.getSender().getId();
-            String contactName = message.getSender().getId().equals(userId) ? message.getReceiver().getNombre() : message.getSender().getNombre();
+        return conversations.stream()
+                .map(conversation -> {
+                    Long contactId = conversation.getParticipantOne().getId().equals(userId)
+                            ? conversation.getParticipantTwo().getId()
+                            : conversation.getParticipantOne().getId();
+                    String contactName = conversation.getParticipantOne().getId().equals(userId)
+                            ? conversation.getParticipantTwo().getNombre()
+                            : conversation.getParticipantOne().getNombre();
+                    String lastMessage = conversation.getMessages() != null && !conversation.getMessages().isEmpty()
+                            ? conversation.getMessages().get(conversation.getMessages().size() - 1).getContent()
+                            : null;
 
-            conversationsMap.putIfAbsent(contactId, new ConversationDTO(contactId, contactName, message.getContent()));
-        }
-
-        return new ArrayList<>(conversationsMap.values());
+                    return new ConversationDTO(
+                            conversation.getId(),  // Nuevo campo agregado para conversationId
+                            contactId,
+                            contactName,
+                            lastMessage
+                    );
+                })
+                .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<ChatMessageDTO> getMessagesByConversationId(Long conversationId) {
         List<ChatMessage> messages = chatMessageRepository.findByConversationId(conversationId);
+        System.out.println("Mensajes obtenidos para la conversación ID " + conversationId + ": " + messages);
         return messages.stream().map(this::toChatMessageDTO).collect(Collectors.toList());
-    }
-
-    public void notifyUserMessages(Long userId, ChatMessageDTO message) {
-        messagingTemplate.convertAndSendToUser(userId.toString(), "/queue/messages", message);
     }
 
     public ChatMessageDTO toChatMessageDTO(ChatMessage message) {
@@ -101,5 +108,35 @@ public class ChatMessageMgr {
                 message.getConversation().getId()
         );
     }
-    
+
+    public ConversationDTO createConversation(Long initiatorId, Long receiverId) {
+        Alumno initiator = alumnoRepository.findById(initiatorId)
+                .orElseThrow(() -> new IllegalArgumentException("El usuario con ID " + initiatorId + " no existe."));
+        Alumno receiver = alumnoRepository.findById(receiverId)
+                .orElseThrow(() -> new IllegalArgumentException("El usuario con ID " + receiverId + " no existe."));
+
+        // Verificar si ya existe una conversación entre los usuarios
+        Conversation conversation = conversationRepository.findByParticipants(initiator, receiver)
+                .orElseGet(() -> {
+                    Conversation newConversation = Conversation.builder()
+                            .participantOne(initiator)
+                            .participantTwo(receiver)
+                            .build();
+                    return conversationRepository.save(newConversation);
+                });
+
+        // Retornar la conversación creada o existente en formato DTO
+        return new ConversationDTO(
+                conversation.getId(),  // Nuevo campo agregado para conversationId
+                receiver.getId(),
+                receiver.getNombre(),
+                null
+        );
+    }
+    public void notifyUserMessages(Long userId, ChatMessageDTO message) {
+        messagingTemplate.convertAndSendToUser(userId.toString(), "/queue/messages", message);
+    }
 }
+
+
+

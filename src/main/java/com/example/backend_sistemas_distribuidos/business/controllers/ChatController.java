@@ -2,15 +2,17 @@ package com.example.backend_sistemas_distribuidos.business.controllers;
 
 import com.example.backend_sistemas_distribuidos.business.entities.dto.ChatMessageDTO;
 import com.example.backend_sistemas_distribuidos.business.entities.dto.ConversationDTO;
+import com.example.backend_sistemas_distribuidos.business.entities.dto.ConversationRequestDTO;
 import com.example.backend_sistemas_distribuidos.business.managers.ChatMessageMgr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.annotation.SendToUser;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/api")
 public class ChatController {
 
     @Autowired
@@ -35,9 +37,15 @@ public class ChatController {
         return chatMessageMgr.getConversations(userId);
     }
 
-    @MessageMapping("/get-messages")
-    @SendToUser("/queue/messages")
-    public List<ChatMessageDTO> getMessages(Long conversationId) {
+    @GetMapping("/conversations/{conversationId}/messages")
+    public List<ChatMessageDTO> getMessages(@PathVariable Long conversationId) {
         return chatMessageMgr.getMessagesByConversationId(conversationId);
     }
+
+    @MessageMapping("/start-conversation")
+    @SendToUser("/queue/conversations")
+    public ConversationDTO startConversation(ConversationRequestDTO request) {
+        return chatMessageMgr.createConversation(request.getInitiatorId(), request.getReceiverId());
+    }
 }
+

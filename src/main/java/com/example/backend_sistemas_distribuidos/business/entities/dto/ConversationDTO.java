@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ConversationDTO {
+    private Long conversationId;  // Nuevo campo agregado
     private Long contactId;
     private String contactName;
     private String lastMessage;
